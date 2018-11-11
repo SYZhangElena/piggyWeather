@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-row>
+    <el-row class="container">
+      <h1>热门城市天气</h1>
       <el-col :xs="{span: 48}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="margin-bottom:30px;">
         <div v-for="cityInfo in citiesInfo" :key="cityInfo.basic">
           <h2>{{cityInfo.province}}  {{cityInfo.city}}</h2>
@@ -39,6 +40,8 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
-
+<style lang="css" scoped>
+.container {
+  margin: 2rem;
+}
 </style>
