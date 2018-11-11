@@ -25,3 +25,7 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getLoginedUserName() {
+  return 'zhangshuyu'
+}

@@ -1,21 +1,29 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name:{{ name }}</div>
-    <div class="dashboard-text">roles:<span v-for="role in roles" :key="role">{{ role }}</span></div>
+    <!-- <div class="dashboard-text">name:{{ name }}</div>-->
+    <el-row>
+      <el-col :xs="{span: 36}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="margin-bottom:30px;">
+        <local-city></local-city>
+      </el-col>
+      <el-col :xs="{span: 36}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="margin-bottom:30px;">
+        <liked-city></liked-city>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
+import LocalCity from './components/LocalCity'
+import LikedCity from './components/LikedCity';
 
 export default {
   name: 'Dashboard',
-  computed: {
-    ...mapGetters([
-      'name',
-      'roles'
-    ])
-  }
+  components: {
+    LocalCity,
+    LikedCity
+  },
 }
 </script>
 
