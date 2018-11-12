@@ -28,47 +28,49 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    name: '个人首页',
-    hidden: true,
+    redirect: '/home',
+    name: 'Home',
+    meta: { title: '首页' },
     children: [{
-      path: 'dashboard',
+      path: 'home',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'home' }
+      meta: { title: '首页' }
     }]
   },
 
   {
     path: '/example',
     component: Layout,
-    redirect: '/example/table',
+    redirect: '/example/province',
     name: 'Zenkoku',
-    meta: { title: '全国', icon: 'example' },
+    meta: { title: '全国' },
     children: [
       {
-        path: 'table',
+        path: 'popular',
         name: '热门城市天气',
         component: () => import('@/views/zenkoku/components/PopularCities'),
-        meta: { title: '热门城市天气', icon: 'table' }
+        meta: { title: '热门城市天气' }
       },
       {
-        path: 'table',
+        path: 'provinces',
         name: '各省天气详情',
-        component: () => import('@/views/table/index'),
-        meta: { title: '各省天气详情', icon: 'table' }
+        component: () => import('@/views/zenkoku/components/Kakusyo'),
+        meta: { title: '各省天气详情' }
       }
     ]
   },
 
   {
-    path: '/form',
+    path: '/more',
     component: Layout,
+    name: 'Zenkoku',
+    meta: { title: '更多' },
     children: [
       {
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: '更多', icon: 'form' }
+        meta: { title: '更多' }
       }
     ]
   },
@@ -81,3 +83,4 @@ export default new Router({
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+

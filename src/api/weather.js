@@ -3,6 +3,10 @@ import Axios from 'axios'
 const key = '6c9855f23706490b98c5a7cfd41ed892'
 
 export function getCityWeatherDetails(city) {
+  // "cloud":"0","cond_code":"101","cond_txt":"多云",
+  // "fl":"3","hum":"78","pcpn":"0.0","pres":"1014",
+  // "tmp":"5","vis":"7","wind_deg":"173","wind_dir":"南风",
+  // "wind_sc":"1","wind_spd":"5"
   const url = `https://free-api.heweather.com/s6/weather/now?location=${city}&key=${key}`
   return Axios.get(url)
     .then(res => {
@@ -68,7 +72,52 @@ export function getLikedCitesList(username) {
 }
 
 export function getCitiesByProvince(province) {
-  return [
-    '北京', '深圳', '汕头', '上海'
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  // var encodedProvince = encodeURI(encodeURI(province))
+  const url = `http://134.175.58.86:9999/province/${province}`
+  return Axios.get(url, config)
+    .then(res => {
+      return res.data.cities
+    })
+}
+
+export function getProvincesList() {
+  return ['北京', '上海', '天津', '重庆', '河北',
+    '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏',
+    '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北',
+    '湖南', '广东', '广西', '海南', '四川', '贵州', '云南',
+    '西藏', '陕西', '甘肃', '宁夏', '青海', '新疆',
+    '香港', '澳门', '台湾'
   ]
 }
+
+export async function getCitiesWeatherList(province) {
+  var cities = await getCitiesByProvince(province)
+  var res = []
+  cities.forEach(city => {
+    res.push(getCityWeatherDetails(city))
+  })
+  return Promise.all(res)
+}
+
+export function parseCitiesWeatherList(arr) {
+  var res = []
+  console.log('heihei!!!!!!!!')
+  console.log(arr)
+  arr.forEach(ele => {
+    var e = ele.HeWeather6[0]
+    var t = {
+      location: e.basic.location,
+      province: e.basic.admin_area
+    }
+    Object.assign(t, e.now)
+    res.push(t)
+  })
+  console.log(res)
+  return res
+}
+
