@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { validatePasswd, validateRegister, logout, getInfo } from '../../api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -26,14 +26,46 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    async Login({ commit }, userInfo) {
+      console.log('logging:' + userInfo)
+      console.log(commit)
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
-          resolve()
+        validatePasswd(username, userInfo.password).then(response => {
+          console.log(response)
+          const data = response.retcode
+          console.log('validate:' + data)
+          if (data === 0) {
+            console.log('yoshi')
+            console.log(window.sessionStorage)
+            window.sessionStorage.setItem('username', username)
+            commit('SET_TOKEN', username)
+            resolve()
+          } else {
+            reject('Validation failed')
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    async Signup({ commit }, userInfo) {
+      const username = userInfo.username.trim()
+      return new Promise((resolve, reject) => {
+        validateRegister(username, userInfo.password).then(response => {
+          console.log(response)
+          const data = response.retcode
+          console.log('validate:' + data)
+          if (data === 0) {
+            console.log('yoshi')
+            console.log(window.sessionStorage)
+            window.sessionStorage.setItem('username', username)
+            commit('SET_TOKEN', username)
+            resolve()
+          } else {
+            reject('Validation failed')
+          }
         }).catch(error => {
           reject(error)
         })

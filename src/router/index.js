@@ -60,21 +60,6 @@ export const constantRouterMap = [
     ]
   },
 
-  {
-    path: '/more',
-    component: Layout,
-    name: 'Zenkoku',
-    meta: { title: '更多' },
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '更多' }
-      }
-    ]
-  },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
 
