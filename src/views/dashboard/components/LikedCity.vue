@@ -41,7 +41,7 @@ export default {
   },
   async mounted() {
     var username = getLoginedUserName()
-    this.likedCities = getLikedCitesList(username)
+    this.likedCities = await getLikedCitesList(username)
     this.cityChoosed = this.likedCities[0]
     await this.fetchWeatherDatas()
   },

@@ -66,9 +66,12 @@ export function parseWeatherDetails(arr) {
 }
 
 export function getLikedCitesList(username) {
-  return [
-    '北京', '深圳', '汕头', '上海'
-  ]
+  // var encodedProvince = encodeURI(encodeURI(province))
+  const url = `http://134.175.58.86:9999/username/city`
+  return Axios.post(url, JSON.stringify({ 'username': username }))
+    .then(res => {
+      return res.data.cities
+    })
 }
 
 export function getCitiesByProvince(province) {
@@ -121,3 +124,20 @@ export function parseCitiesWeatherList(arr) {
   return res
 }
 
+export function postLikedCity(username, city_cn) {
+  const url = `http://134.175.58.86:9999/username/city/add`
+  return Axios.post(url, JSON.stringify({ 'username': username, 'city_cn': city_cn }))
+    .then(res => {
+      console.log(res)
+      return res.data.retcode
+    })
+}
+
+export function getLatestTemMap() {
+  // http://pi.weather.com.cn/i/product/share/pic/l/PWCP_TWC_WEAP_S99_ETO_TWC_L88_P9_20181113090000000.JPG
+  const url = `http://134.175.58.86:9999/tmp/map/now`
+  return Axios.get(url)
+    .then(res => {
+      return res.data.imgs[0]
+    })
+}

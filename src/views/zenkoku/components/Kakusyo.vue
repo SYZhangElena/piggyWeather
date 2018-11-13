@@ -10,11 +10,6 @@
           :value="province">
         </el-option>
       </el-select>
-      <el-input
-        style="margin: 0.5rem; width: 20rem;"
-        placeholder="输入列关键字"
-        v-model="queryTxt">
-      </el-input>
       <el-table
         :data='citiesWeather'>
         <el-table-column
@@ -26,6 +21,14 @@
           :filter-method="title.prop === 'cond_txt' ? onWeatherFilter : null"
           sortable>
         </el-table-column>
+        <el-table-column>
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="onClickLike(scope.row)">添加关注
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
   </div>
@@ -35,7 +38,8 @@
 import WeatherList from '../../../components/WeatherList'
 import { getProvincesList,
          getCitiesWeatherList, 
-         parseCitiesWeatherList } from '../../../api/weather'
+         parseCitiesWeatherList,
+         postLikedCity } from '../../../api/weather'
 import { getLoginedUserName } from '../../../api/login'
 
 export default {
@@ -101,6 +105,22 @@ export default {
     },
     onWeatherFilter(value, row) {
       return row.cond_txt === value
+    },
+    async onClickLike(row) {
+      var username = sessionStorage.getItem('username')
+      var status = await postLikedCity(username, row['location'])
+      console.log(status)
+      if (status === 0) {
+        this.$message({
+          message: `已添加${row['location']}到关注列表`,
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: `添加失败`,
+          type: 'warning'
+        })    
+      }
     }
   },
   watch: {
