@@ -141,3 +141,16 @@ export function getLatestTemMap() {
       return res.data.imgs[0]
     })
 }
+
+export function addEmailNotify(email, username, city_cn) {
+  const url = `http://134.175.58.86:9999/email`
+  var sentData = {
+    'email': email,
+    'username': username,
+    'city_cn': city_cn
+  }
+  return Axios.post(url, JSON.stringify(sentData))
+    .then(res => {
+      return res.data
+    })
+}
