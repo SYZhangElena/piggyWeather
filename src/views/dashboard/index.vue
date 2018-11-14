@@ -9,6 +9,9 @@
         <liked-city></liked-city>
       </el-col>
     </el-row>
+    <el-row>
+      <trends></trends>
+    </el-row>
   </div>
 </template>
 
@@ -16,13 +19,15 @@
 import { mapGetters } from 'vuex'
 import Vue from 'vue'
 import LocalCity from './components/LocalCity'
-import LikedCity from './components/LikedCity';
+import LikedCity from './components/LikedCity'
+import Trends from './components/Trends'
 
 export default {
   name: 'Dashboard',
   components: {
     LocalCity,
-    LikedCity
+    LikedCity,
+    Trends
   },
 }
 </script>
