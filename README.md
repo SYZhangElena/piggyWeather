@@ -374,7 +374,7 @@ app.log.20181113：
 2018/11/14 21:59:39|INFO|22367|200 GET /tmp/map/now (199.241.143.67) 0.74ms
 ```
 
-## 前端
+### 前端
 
 - 权限控制
 
@@ -439,3 +439,43 @@ export const constantRouterMap = [
 ]
 ```
 
+## 接口测试
+接下来对以下接口进行测试：
+```
+url_patterns = [
+    (r"/login", LoginHandler),
+    (r"/signup", SignupHandler),
+    (r"/tmp/map/now", TmpMapHandler),
+    (r"/username/city/add", LikedCityInsertHandler),
+    (r"/username/city", LikedCityHandler),
+    (r"/province/(?P<province>.*)", ProvinceHandler),
+    (r"/email", EmailNotifyHandler),
+    (r"/.*", BaseHandler)
+]
+```
+- signup
+1. 新用户
+curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname", "passwd": "testpasswd"}'
+{"retcode": 0}
+2. 已有用户（重复以上操作）
+curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname", "passwd": "testpasswd"}'
+{"retcode": 1}
+
+- login
+1. 已有用户
+curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname", "passwd": "testpasswd"}'
+{"retcode": 0}
+2. 新用户
+curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname1", "passwd": "testpasswd1"}'
+{"retcode": 1}
+
+- likedcityinsert
+1. 数据库里存在的用户
+curl -X POST http://134.175.58.86:9999/username/city -d'{"username": "testname", "city_cn": "北京"}'
+{"retcode": 0}
+2. 数据库里不存在的用户
+curl -X POST http://134.175.58.86:9999/username/city -d'{"username": "testname1", "city_cn": "北京"}'
+{"retcode": 1}
+3. 数据库里不存在的城市
+curl -X POST http://134.175.58.86:9999/username/city -d'{"username": "testname1", "city_cn": "北京呵呵"}'
+{"retcode": 1}
