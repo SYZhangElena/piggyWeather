@@ -145,3 +145,203 @@ piggyServer
   51         logging.error(e)
   52     return None
 ```
+
+## 核心代码
+### 后端核心代码
+
+- 路由
+
+```python
+url_patterns = [
+    (r"/login", LoginHandler),
+    (r"/signup", SignupHandler),
+    (r"/tmp/map/now", TmpMapHandler),
+    (r"/username/city/add", LikedCityInsertHandler),
+    (r"/username/city", LikedCityHandler),
+    (r"/province/(?P<province>.*)", ProvinceHandler),
+    (r"/.*", BaseHandler)
+]
+```
+
+- 主程序主要代码，支持优雅重启
+
+```python
+def main():
+    signal.signal(signal.SIGTERM, handler)
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGUSR2, changelog)
+    application = tornado.web.Application(url_patterns, **settings)
+    global server
+
+    server = tornado.httpserver.HTTPServer(application, xheaders=True)
+    logging.info(options.port)
+    logging.info(options.address)
+    server.bind(options.port, options.address)
+    server.start(0)
+
+    tornado.ioloop.IOLoop.instance().start()
+```
+
+- 登录注册逻辑
+
+```python
+class LoginHandler(BaseHandler):
+    def prepare(self):
+        super(LoginHandler, self).prepare()
+
+    def post(self):
+        res = {
+            'retcode': 1
+        }
+  
+        logging.info(self.request.body)
+        try:
+            params = json.loads(self.request.body)
+        except Exception as why:
+            logging.info('Invalid post params')
+            self.write(res)
+            return
+
+        if ('username' not in params) or ('passwd' not in params):
+            self.write(res)
+            return
+
+        valid_passwd = db.get_passwd_by_username(params['username'])
+        if valid_passwd == params['passwd']:
+            res['retcode'] = 0
+            self.write(res)
+        else:
+            self.write(res)
+```
+
+- 关注城市查询
+
+```python
+class LikedCityHandler(BaseHandler):
+    def prepare(self):
+        super(LikedCityHandler, self).prepare()
+
+    def post(self):
+        res = {
+            'cities': []
+        }
+        logging.info(self.request.body)
+        try:
+            params = json.loads(self.request.body)
+        except:
+            logging.info('Invalid post params')
+            self.write(res)
+            return
+        if 'username' not in params:
+            self.write(res)
+            return
+        try:
+            cities = db.get_cities_by_username(params['username'])
+        except Exception as why:
+            logging.error(why)
+        else:
+            res['cities'] = cities
+        self.write(res)
+```
+
+- 日志设置代码
+
+```python
+settings["log_path"] = config.get("base", "MATRIX_APPLOGS_DIR").strip('"')
+settings["log_format"] = logging.Formatter(fmt="%(asctime)s|%(levelname)s|%(process)d|%(message)s", datefmt="%Y/%m/%d %H:%M:%S")
+
+logfile = "{0}/app.log.{1}".format(settings["log_path"], time.strftime("%Y%m%d"))
+fh = logging.FileHandler(filename=logfile)
+fh.setFormatter(settings["log_format"])
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.addHandler(fh)
+```
+
+- 部分日志信息样式
+
+```
+applogs/
+├── app.log.20181112
+├── app.log.20181113
+└── app.log.20181114
+
+app.log.20181113：
+2018/11/14 21:57:48|INFO|22367|200 POST /login (199.241.143.67) 1.04ms
+2018/11/14 21:57:54|INFO|22367|remote ip: 199.241.143.67
+2018/11/14 21:57:54|INFO|22367|{"username":"admin"}
+2018/11/14 21:57:54|INFO|22367|[(u'\u6d77\u6dc0',), (u'\u660c\u5e73',), (u'\u5317\u4eac',), (u'\u4e0a\u6d77',)]
+2018/11/14 21:57:54|INFO|22367|200 POST /username/city (199.241.143.67) 5.64ms
+2018/11/14 21:59:15|INFO|22367|remote ip: 199.241.143.67
+2018/11/14 21:59:15|INFO|22367|{"username":"admin"}
+2018/11/14 21:59:15|INFO|22367|[(u'\u6d77\u6dc0',), (u'\u660c\u5e73',), (u'\u5317\u4eac',), (u'\u4e0a\u6d77',)]
+2018/11/14 21:59:15|INFO|22367|200 POST /username/city (199.241.143.67) 5.50ms
+2018/11/14 21:59:39|INFO|22367|remote ip: 199.241.143.67
+2018/11/14 21:59:39|INFO|22367|200 GET /tmp/map/now (199.241.143.67) 0.74ms
+```
+
+## 前端
+
+- 权限控制
+
+```js
+const whiteList = ['/login'] // 不重定向白名单
+router.beforeEach((to, from, next) => {
+  NProgress.start()
+  console.log(window.sessionStorage)
+  if (window.sessionStorage.getItem('username')) {
+    next()
+  } else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next()
+    } else {
+      next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
+      NProgress.done()
+    }
+  }
+})
+```
+
+- 路由
+
+```js
+export const constantRouterMap = [
+  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+  { path: '/404', component: () => import('@/views/404'), hidden: true },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/home',
+    name: 'Home',
+    meta: { title: '首页' },
+    children: [{
+      path: 'home',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '首页' }
+    }]
+  }
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/province',
+    name: 'Zenkoku',
+    meta: { title: '全国' },
+    children: [
+      {
+        path: 'popular',
+        name: '热门城市天气',
+        component: () => import('@/views/zenkoku/components/PopularCities'),
+        meta: { title: '热门城市天气' }
+      },
+      {
+        path: 'provinces',
+        name: '各省天气详情',
+        component: () => import('@/views/zenkoku/components/Kakusyo'),
+        meta: { title: '各省天气详情' }
+      }
+    ]
+  },
+  { path: '*', redirect: '/404', hidden: true }
+]
+```
+
