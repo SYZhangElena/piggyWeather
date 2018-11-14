@@ -47,6 +47,7 @@ CN101011000,shijingshan,石景山,beijing,北京,beijing,北京,39.9146,116.1954
 
 ### emailnotify
 create table cityemail (email vchar(32) NOT NULL PRIMARY KEY, username vchar(16) NOT NULL, city_id vchar(16) NOT NULL);
+
 email|username|city_id|
 :-:|:-:|:-:
 vchar(32)|vchar(16)|vchar(16)
@@ -454,22 +455,27 @@ url_patterns = [
 ]
 ```
 - signup
+```
 1. 新用户
 curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname", "passwd": "testpasswd"}'
 {"retcode": 0}
 2. 已有用户（重复以上操作）
 curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname", "passwd": "testpasswd"}'
 {"retcode": 1}
+```
 
 - login
+```
 1. 已有用户
 curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname", "passwd": "testpasswd"}'
 {"retcode": 0}
 2. 新用户
 curl -X POST http://134.175.58.86:9999/login -d'{"username": "testname1", "passwd": "testpasswd1"}'
 {"retcode": 1}
+```
 
 - likedcityinsert
+```
 1. 数据库里存在的用户
 curl -X POST http://134.175.58.86:9999/username/city -d'{"username": "testname", "city_cn": "北京"}'
 {"retcode": 0}
@@ -479,3 +485,4 @@ curl -X POST http://134.175.58.86:9999/username/city -d'{"username": "testname1"
 3. 数据库里不存在的城市
 curl -X POST http://134.175.58.86:9999/username/city -d'{"username": "testname1", "city_cn": "北京呵呵"}'
 {"retcode": 1}
+```
