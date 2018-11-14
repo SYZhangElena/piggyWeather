@@ -11,25 +11,25 @@ npm run dev
 
 ## 数据库
 ### user
-create table user (username vchar(16) NOT NULL, passwd vchar(64));
+create table user (username vchar(16) NOT NULL PRIMARY KEY, passwd vchar(64));
 
-|uid|mail|username|passwd|
-:-:|:-:|:-:|:-:
-int|vchar|vchar|vchar
+|username|passwd|
+:-:|:-:
+vchar(16)|vchar(64)
 
 ### likedCities
-create table likedcities (username vchar(16) NOT NULL, city_id vchar(16) NOT NULL);
+create table likedcities (username vchar(16) NOT NULL PRIMARY KEY, city_id vchar(16) NOT NULL);
 
-|uid|city|
+|username|city_id|
 :-:|:-:
-vchar|vchar
+vchar(16)|vchar(16)
 
 ### citis
-create table cities (city_id vchar(16) NOT NULL, city_en vchar(64), city_cn vchar(64), province_en vchar(64), province_cn vchar(64), admin_district_en vchar(64), admin_district_cn vchar(64), latitude float, longitude float);
+create table cities (city_id vchar(16) NOT NULL PRIMARY KEY , city_en vchar(64), city_cn vchar(64), province_en vchar(64), province_cn vchar(64), admin_district_en vchar(64), admin_district_cn vchar(64), latitude float, longitude float);
 
 City_ID|City_EN|City_CN|Province_EN|Province_CN|Admin_district_EN|Latitude|Longitude
 :-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:
-
+|vchar(16)|vchar(16)|vchar(16)|vchar(16)|vchar(16)|vchar(16)|vchar(16)|vchar(16)
 ```
 sqlite> select * from cities limit 10;
 city_id,city_en,city_cn,province_en,province_cn,admin_district_en,admin_district_cn,latitude,longitude
