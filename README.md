@@ -45,6 +45,11 @@ CN101010900,fengtai,丰台,beijing,北京,beijing,北京,39.863644,116.286964
 CN101011000,shijingshan,石景山,beijing,北京,beijing,北京,39.9146,116.19544
 ```
 
+### emailnotify
+create table cityemail (email vchar(32) NOT NULL PRIMARY KEY, username vchar(16) NOT NULL, city_id vchar(16) NOT NULL);
+email|username|city_id|
+:-:|:-:|:-:
+vchar(32)|vchar(16)|vchar(16)
 
 ## 技术栈
 ### 概述
