@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import {theServer} from './setting'
 
 const key = '6c9855f23706490b98c5a7cfd41ed892'
 
@@ -67,7 +68,7 @@ export function parseWeatherDetails(arr) {
 
 export function getLikedCitesList(username) {
   // var encodedProvince = encodeURI(encodeURI(province))
-  const url = `http://134.175.58.86:9999/username/city`
+  const url = `${theServer}/username/city`
   return Axios.post(url, JSON.stringify({ 'username': username }))
     .then(res => {
       return res.data.cities
@@ -81,7 +82,7 @@ export function getCitiesByProvince(province) {
     }
   }
   // var encodedProvince = encodeURI(encodeURI(province))
-  const url = `http://134.175.58.86:9999/province/${province}`
+  const url = `${theServer}/province/${province}`
   return Axios.get(url, config)
     .then(res => {
       return res.data.cities
@@ -125,7 +126,7 @@ export function parseCitiesWeatherList(arr) {
 }
 
 export function postLikedCity(username, city_cn) {
-  const url = `http://134.175.58.86:9999/username/city/add`
+  const url = `${theServer}/username/city/add`
   return Axios.post(url, JSON.stringify({ 'username': username, 'city_cn': city_cn }))
     .then(res => {
       console.log(res)
@@ -135,7 +136,8 @@ export function postLikedCity(username, city_cn) {
 
 export function getLatestTemMap() {
   // http://pi.weather.com.cn/i/product/share/pic/l/PWCP_TWC_WEAP_S99_ETO_TWC_L88_P9_20181113090000000.JPG
-  const url = `http://134.175.58.86:9999/tmp/map/now`
+  const url = `${theServer}/tmp/map/now`
+  console.log(url)
   return Axios.get(url)
     .then(res => {
       return res.data.imgs[0]
@@ -143,7 +145,7 @@ export function getLatestTemMap() {
 }
 
 export function addEmailNotify(email, username, city_cn) {
-  const url = `http://134.175.58.86:9999/email`
+  const url = `${theServer}/email`
   var sentData = {
     'email': email,
     'username': username,

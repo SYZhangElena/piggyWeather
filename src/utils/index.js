@@ -72,3 +72,5 @@ export function formatTime(time, option) {
 export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }
+
+export var theServer = 'http://127.0.0.1:9999'

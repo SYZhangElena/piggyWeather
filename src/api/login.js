@@ -1,5 +1,6 @@
 import Axios from 'axios'
 import request from '@/utils/request'
+import {theServer} from './setting'
 
 // Cache processor
 export var Cache = {
@@ -26,7 +27,7 @@ export function validatePasswd(username, password) {
     'username': username,
     'passwd': password
   })
-  return Axios.post('http://134.175.58.86:9999/login', sentData)
+  return Axios.post('http://127.0.0.1:9999/login', sentData)
     .then(res => {
       return res.data
     })
@@ -37,7 +38,7 @@ export function validateRegister(username, password) {
     'username': username,
     'passwd': password
   })
-  return Axios.post('http://134.175.58.86:9999/signup', sentData)
+  return Axios.post('http://127.0.0.1:9999/signup', sentData)
     .then(res => {
       return res.data
     })
@@ -67,7 +68,7 @@ export function sign(username, password) {
     'username': username,
     'passwd': password
   })
-  return Axios.post('http://134.175.58.86:9999/signup', sentData)
+  return Axios.post('http://127.0.0.1:9999/signup', sentData)
     .then(res => {
       return res.data
     })
